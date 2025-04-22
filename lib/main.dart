@@ -13,9 +13,10 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       home: BlocProvider(
-        create: (_) => ApodCubit()..loadImages(),
-        child: const ApodScreen(),
+        create: (context) => MarsRoverCubit()..loadPhotos(100),
+        child: const MarsRoverPhotosScreen(),
       ),
     );
   }

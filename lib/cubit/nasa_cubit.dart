@@ -1,26 +1,34 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:equatable/equatable.dart';
 import '../requests/api.dart';
-class ApodState {}
-class ApodLoading extends ApodState {}
-class ApodLoaded extends ApodState {
-  final List<String> imageUrls;
-  ApodLoaded(this.imageUrls);
+
+abstract class MarsRoverState extends Equatable {
+  const MarsRoverState();
+  @override List<Object> get props => [];
 }
-class ApodError extends ApodState {
+
+class MarsRoverLoading extends MarsRoverState {}
+class MarsRoverLoaded extends MarsRoverState {
+  final List<Map<String, dynamic>> photos;
+  const MarsRoverLoaded(this.photos);
+  @override List<Object> get props => [photos];
+}
+class MarsRoverError extends MarsRoverState {
   final String message;
-  ApodError(this.message);
+  const MarsRoverError(this.message);
+  @override List<Object> get props => [message];
 }
 
-class ApodCubit extends Cubit<ApodState> {
-  ApodCubit() : super(ApodLoading());
+class MarsRoverCubit extends Cubit<MarsRoverState> {
+  MarsRoverCubit() : super(MarsRoverLoading());
 
-  Future<void> loadImages() async {
-    emit(ApodLoading());
+  Future<void> loadPhotos(int sol) async {
+    emit(MarsRoverLoading());
     try {
-      final urls = await NasaApi.getApodImages(10); 
-      emit(ApodLoaded(urls));
+      final photos = await NasaApi.getMarsPhotos(sol);
+      emit(MarsRoverLoaded(photos));
     } catch (e) {
-      emit(ApodError(e.toString()));
+      emit(MarsRoverError(e.toString()));
     }
   }
 }

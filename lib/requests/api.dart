@@ -2,27 +2,42 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class NasaApi {
-  static const String _apodUrl = 'https://api.nasa.gov/planetary/apod';
-  static const String _apiKey = 'DEMO_KEY'; // Можно использовать ваш ключ
+  static const String _baseUrl = 'https://api.nasa.gov/mars-photos/api/v1/rovers/curiosity/photos';
+  static const String _apiKey = 't5EY8daoEzYwoPNLd6xkFf6nAtz5fxzjENDeON3Y';
 
-  static Future<List<String>> getApodImages(int count) async {
+  static Future<List<Map<String, dynamic>>> getMarsPhotos(int sol) async {
     try {
-      final url = '$_apodUrl?api_key=$_apiKey&count=$count';
-      print('APOD Request URL: $url');
+      final url = '$_baseUrl?sol=$sol&api_key=$_apiKey';
+      print('Request URL: $url');
       
       final response = await http.get(Uri.parse(url));
 
       if (response.statusCode == 200) {
-        final List<dynamic> data = json.decode(response.body);
-        return data
-            .where((item) => item['media_type'] == 'image')
-            .map((item) => item['url'].toString())
-            .toList();
+        final data = json.decode(response.body);
+        
+        if (data['photos'].isEmpty) {
+          throw Exception('No photos available for sol $sol');
+        }
+
+        return (data['photos'] as List).map<Map<String, dynamic>>((photo) {
+          return {
+            'url': _ensureHttps(photo['img_src']),
+            'title': photo['camera']['full_name'],
+            'date': photo['earth_date'],
+            'media_type': 'image'
+          };
+        }).toList();
       } else {
-        throw Exception('APOD request failed: ${response.statusCode}');
+        throw Exception('Request failed: ${response.statusCode}');
       }
     } catch (e) {
-      throw Exception('APOD error: $e');
+      throw Exception('API error: $e');
     }
+  }
+
+  static String _ensureHttps(String url) {
+    return url.startsWith('http://') 
+      ? url.replaceFirst('http://', 'https://')
+      : url;
   }
 }
