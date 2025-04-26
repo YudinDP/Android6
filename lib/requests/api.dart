@@ -2,12 +2,12 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class NasaApi {
-  static const String _baseUrl = 'https://api.nasa.gov/mars-photos/api/v1/rovers/curiosity/photos';
-  static const String _apiKey = 't5EY8daoEzYwoPNLd6xkFf6nAtz5fxzjENDeON3Y';
+  static const String baseUrl = 'https://api.nasa.gov/mars-photos/api/v1/rovers/curiosity/photos';
+  static const String apiKey = 't5EY8daoEzYwoPNLd6xkFf6nAtz5fxzjENDeON3Y';
 
   static Future<List<Map<String, dynamic>>> getMarsPhotos(int sol) async {
     try {
-      final url = '$_baseUrl?sol=$sol&api_key=$_apiKey';
+      final url = '$baseUrl?sol=$sol&api_key=$apiKey';
       print('Request URL: $url');
       
       final response = await http.get(Uri.parse(url));
