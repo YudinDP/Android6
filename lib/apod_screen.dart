@@ -9,7 +9,7 @@ class MarsRoverPhotosScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Curiosity (Sol 100)')),
+      appBar: AppBar(title: const Text('Юдин Данила ВМК-22 вар.8(2)\nCuriosity (Sol 100)')),
       body: BlocBuilder<MarsRoverCubit, MarsRoverState>(
         builder: (context, state) {
           if (state is MarsRoverLoading) {
@@ -19,7 +19,7 @@ class MarsRoverPhotosScreen extends StatelessWidget {
             return Center(child: Text(state.message));
           }
           if (state is MarsRoverLoaded) {
-            return _buildPhotosList(state.photos);
+            return buildPhotosList(state.photos);
           }
           return const Center(child: Text('Press button to load photos'));
         },
@@ -27,7 +27,7 @@ class MarsRoverPhotosScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildPhotosList(List<Map<String, dynamic>> photos) {
+  Widget buildPhotosList(List<Map<String, dynamic>> photos) {
     return ListView.builder(
       itemCount: photos.length,
       itemBuilder: (context, index) {

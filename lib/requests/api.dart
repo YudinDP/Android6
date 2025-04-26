@@ -21,7 +21,7 @@ class NasaApi {
 
         return (data['photos'] as List).map<Map<String, dynamic>>((photo) {
           return {
-            'url': _ensureHttps(photo['img_src']),
+            'url': ensureHttps(photo['img_src']),
             'title': photo['camera']['full_name'],
             'date': photo['earth_date'],
             'media_type': 'image'
@@ -35,7 +35,7 @@ class NasaApi {
     }
   }
 
-  static String _ensureHttps(String url) {
+  static String ensureHttps(String url) {
     return url.startsWith('http://') 
       ? url.replaceFirst('http://', 'https://')
       : url;
